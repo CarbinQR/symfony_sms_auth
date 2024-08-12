@@ -28,7 +28,6 @@ services:
     environment:
       TZ: Europe/Kiev
       DB_HOST: mysqlsymfony
-      XDEBUG_CONFIG: "remote_host=192.168.221.1 remote_enable=1"
       PHP_IDE_CONFIG: "serverName=Docker"
     volumes:
       - ./app:/var/www/html
@@ -48,6 +47,3 @@ services:
 #    container_name: redis
 #    networks:
 #      - docker-world_softsvit
-
-
-## DB in polls, RabbitMQ, ES, BS in triggers

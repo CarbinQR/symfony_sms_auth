@@ -55,14 +55,4 @@ RUN apk --no-cache add shadow && \
     groupmod -o -g ${PGID} www-data && \
     usermod -o -u ${PUID} -g www-data www-data
 
-# Source code
-#COPY ./ /var/www
-#WORKDIR /var/www
-ADD ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
-# Composer
 COPY --from=composer:2.7.7 /usr/bin/composer /usr/bin/composer
-#RUN composer install --no-interaction
-#
-#CMD php-fpm
-#
-#EXPOSE 9000
