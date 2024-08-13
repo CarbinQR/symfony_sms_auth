@@ -47,8 +47,6 @@ RUN set -eux; \
     && docker-php-ext-enable xdebug \
     && apk del autoconf g++ make libmemcached-dev
 
-
-# Configure non-root user.
 ARG PUID=1000
 ARG PGID=1000
 RUN apk --no-cache add shadow && \

@@ -17,6 +17,8 @@ services:
       - ./docker/logs/nginx:/var/log/nginx
     depends_on:
       - php
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - docker-world_symfony
 
@@ -34,6 +36,8 @@ services:
       - ./docker/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
     ports:
       - "9005:9000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - docker-world_symfony
 
