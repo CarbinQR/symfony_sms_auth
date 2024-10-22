@@ -1,7 +1,8 @@
-version: '3.7'
+version: '3.8'
 
 networks:
-  docker-world_symfony:
+  docker-symfony:
+    name: docker-symfony
 
 services:
   nginx:
@@ -20,7 +21,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
-      - docker-world_symfony
+      - docker-symfony
 
   php:
     build:
@@ -29,7 +30,7 @@ services:
     container_name: php-symfony
     environment:
       TZ: Europe/Kiev
-      DB_HOST: mysqlsymfony
+      DB_HOST: mysql-symfony
       PHP_IDE_CONFIG: "serverName=Docker"
     volumes:
       - ./app:/var/www/html
@@ -39,15 +40,32 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
-      - docker-world_symfony
+      - docker-symfony
 
-#  redis:
-#    image: "redis:alpine"
-#    ports:
-#      - "6380:6379"
-#    command: [ "redis-server" ]
-#    environment:
-#      TZ: Europe/Kiev
-#    container_name: redis
-#    networks:
-#      - docker-world_softsvit
+  redis:
+    image: "redis:alpine"
+    container_name: redis-symfony
+    ports:
+      - "6380:6379"
+    command: [ "redis-server" ]
+    environment:
+      TZ: Europe/Kiev
+    networks:
+      - docker-symfony
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-symfony
+    restart: always
+    environment:
+      TZ: Europe/Kiev
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./docker/mysql_data:/var/lib/mysql
+    networks:
+      - docker-symfony
