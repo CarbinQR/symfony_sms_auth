@@ -1,10 +1,11 @@
 <?php
 
 namespace App\EventListener\Auth;
+
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
-use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 #[AsEventListener(event: 'kernel.controller', method: 'onKernelController')]
 class RateLimitListener
@@ -17,16 +18,19 @@ class RateLimitListener
     }
 
     /**
-     * Обмеження кількості запитів з одного IP. Можливо, бажано перенести у мідлвари та
-     * комбінувати параметр для перевірки, накшкалт ІР + номер телефону, тощо...
+     * Limit the number of requests from one IP to a single route. It might be preferable to move this to middleware
+     * and combine parameters for verification, such as IP + phone number, etc. Additionally, routes should be
+     * moved to groups for more flexible management.
      */
     public function onKernelController(ControllerEvent $event): void
     {
         $request = $event->getRequest();
+        $routeName = $request->attributes->get('_route');
 
         if ($request->attributes->get('_rate_limited')) {
-            $limiter = $this->anonymousApiLimiter->create($request->getClientIp());
-            if (!$limiter->consume(1)->isAccepted()) {
+            $limiter = $this->anonymousApiLimiter->create($routeName . '_' . $request->getClientIp());
+
+            if (!$limiter->consume()->isAccepted()) {
                 throw new TooManyRequestsHttpException('Too many requests');
             }
         }

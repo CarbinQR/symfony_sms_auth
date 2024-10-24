@@ -23,14 +23,9 @@ class User implements UserInterface
     #[Assert\Regex('/^\+\d{10,14}$/')]
     private ?string $phone = null;
 
-    //на практиці виглядає як зв'язок з табою провайдерів
+    //In practice, it looks like a connection with the providers table.
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $provider = null;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getNickname(): ?string
     {
@@ -40,13 +35,6 @@ class User implements UserInterface
     public function setNickname(?string $nickname): static
     {
         $this->nickname = $nickname;
-
-        return $this;
-    }
-
-    public function setId(int $id): static
-    {
-        $this->id = $id;
 
         return $this;
     }

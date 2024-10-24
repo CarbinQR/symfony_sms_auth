@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Request\Auth;
+namespace App\Request\Sms;
 
 use App\Request\AbstractRequest;
 use App\Validator\PhoneNumber;

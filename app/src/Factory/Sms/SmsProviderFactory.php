@@ -11,9 +11,10 @@ class SmsProviderFactory
     private array $providers;
 
     /**
-     * На практиці можна використовувати ім'я класа сутності провайдера, щось типу:
-     * [TurboSms::class, ...], а у getProviderForUser() трохи переробити логіку..
+     * In practice, you can use the name of the provider entity class, something like:
+     * [TurboSms::class, ...], and slightly modify the logic in getProviderForUser().
      */
+
     public function __construct()
     {
         $this->providers = [

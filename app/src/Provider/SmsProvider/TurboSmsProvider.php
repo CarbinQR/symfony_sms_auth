@@ -4,29 +4,30 @@ namespace App\Provider\SmsProvider;
 
 use App\Entity\User;
 use App\Provider\Contract\SmsProviderInterface;
+use GuzzleHttp\Client;
 
 class TurboSmsProvider extends AbstractSmsProvider implements SmsProviderInterface
 {
-
     public function __construct(User $user)
     {
         $this->provider = $user->getProvider();
         parent::__construct();
     }
+
     /**
-     * на практиці беремо креди з таби провайдерів та проводимо необхідні
-     * маніпуляціїї для авторизаціїї у провайдера
+     * In practice, we take the credentials from the providers tab and perform the necessary
+     * manipulations for authorization with the provider.
      */
     public function auth(): static
     {
-//        $this->client = new Client([
-//            'base_uri' => $this->provider->getUrl(),
-//            'headers' => [
-//                'API-Key' => ' $this->provider->getApiKey()',
-//                'APP-Token' => '$this->provider->getAppToken()',
-//                'Content-Type' => 'application/json',
-//            ],
-//        ]);
+        $this->client = new Client([
+            'base_uri' => '$this->provider->getUrl()',
+            'headers' => [
+                'API-Key' => ' $this->provider->getApiKey()',
+                'APP-Token' => '$this->provider->getAppToken()',
+                'Content-Type' => 'application/json',
+            ],
+        ]);
 
         return $this;
     }
@@ -50,11 +51,11 @@ class TurboSmsProvider extends AbstractSmsProvider implements SmsProviderInterfa
                 JSON_THROW_ON_ERROR
             );
 
-            //Подальші дії з респонсом, логування...
+            // Further actions with the response, logging...
 
             return $responseBody;
-        } catch (\Exception $requestException) {
-            // Логування та подальші дії
+        } catch (\Exception $e) {
+            // send sms error log
         }
 
         return [];

@@ -3,7 +3,8 @@
 namespace App\Service\Cache;
 
 use Predis\Client;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\env;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class RedisService implements CacheServiceInterface
 {
@@ -16,19 +17,36 @@ class RedisService implements CacheServiceInterface
 
     public function set(string $key, mixed $value, int $lifetime = 0): void
     {
-        $this->client->set($key, $value);
-        if ($lifetime > 0) {
-            $this->client->expire($key, $lifetime);
-        }
+        $this->tryCallback(function () use ($key, $value, $lifetime) {
+            $this->client->set($key, $value);
+            if ($lifetime > 0) {
+                $this->client->expire($key, $lifetime);
+            }
+        });
     }
 
-    public function get(string $key)
+    public function get(string $key): ?array
     {
-        return $this->client->get($key);
+        $cacheData = $this->tryCallback(function () use ($key) {
+            return $this->client->get($key);
+        });
+
+        return json_decode($cacheData, true, 512, JSON_THROW_ON_ERROR);
     }
 
     public function delete(string $key): void
     {
-        $this->client->del([$key]);
+        $this->tryCallback(function () use ($key) {
+            $this->client->del($key);
+        });
+    }
+
+    protected function tryCallback(callable $callback): mixed
+    {
+        try {
+            return $callback();
+        } catch (\Exception $e) {
+            throw new HttpException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+        }
     }
 }

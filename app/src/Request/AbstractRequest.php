@@ -2,12 +2,11 @@
 
 namespace App\Request;
 
-use App\Exception\InvalidJsonRequest;
 use ReflectionClass;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -33,9 +32,8 @@ class AbstractRequest
     {
         $request = $this->getRequest();
         if (!self::isValidFormat($request)) {
-            throw new InvalidJsonRequest(['expected application/json on header Content-Type request']);
+            throw new HttpException(Response::HTTP_BAD_REQUEST, 'expected application/json on header Content-Type request');
         }
-
         $reflection = new ReflectionClass($this);
 
         foreach ($request->toArray() as $property => $value) {
@@ -64,7 +62,7 @@ class AbstractRequest
             ];
         }
 
-        throw new InvalidJsonRequest($errors);
+        throw new HttpException(Response::HTTP_UNPROCESSABLE_ENTITY, json_encode($errors));
     }
 
     private static function isValidFormat(Request $request): bool

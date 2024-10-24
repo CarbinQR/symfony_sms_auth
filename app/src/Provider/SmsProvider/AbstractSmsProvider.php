@@ -8,7 +8,7 @@ class AbstractSmsProvider
 {
     protected Client $client;
 
-    // сутність провайдера
+    // provider entity
     protected $provider;
 
     public function __construct()
