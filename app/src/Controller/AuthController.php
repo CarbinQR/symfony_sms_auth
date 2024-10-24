@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class AuthController extends ApiController
 {
-    #[Route('/api/auth/verify', name: 'app_auth_verify_code', defaults: ['_rate_limited' => true], methods: 'POST')]
+    #[Route('/api/auth/verify', name: 'app_auth_verify_code', defaults: ['_rate_limited' => false], methods: 'POST')]
     public function verifyCode(
         Request               $request,
         AuthService           $authService,
