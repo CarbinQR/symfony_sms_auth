@@ -84,7 +84,8 @@ exit
 
 ### 9. Access the Application
 
-The application is available at [http://127.0.0.1:8080](http://127.0.0.1:8080) (or another port specified in `docker-compose.yml -> nginx -> ports`).
+The application is available at [http://127.0.0.1:8080](http://127.0.0.1:8080) (or another port specified in
+`docker-compose.yml -> nginx -> ports`).
 
 ### Available Routes
 
@@ -93,7 +94,7 @@ The application is available at [http://127.0.0.1:8080](http://127.0.0.1:8080) (
   Request Body (JSON):
   ```json
   {
-    "phone": "+38066******4"
+    "phone": "+380660000004"
   }
   ```
 
@@ -102,9 +103,29 @@ The application is available at [http://127.0.0.1:8080](http://127.0.0.1:8080) (
   Request Body (JSON):
   ```json
   {
-    "phone": "+38066******4",
+    "phone": "+380660000004",
     "code": 958533
   }
   ```
 
 After validating the authorization code, a JWT token will be returned in the response.
+
+## Overview
+
+In this case, Provider 1 is set as the default. In practice, when using multiple providers, they are added to a
+credentials table and retrieved from the database through a connection with the user (in this case, it is simulated).
+
+To reduce the load on the database, Redis is used with a code lifespan of 15 minutes. If the code is generated more than
+three times, an exception is returned. Caching was chosen as it helps offload the database and simplifies the logic for
+clearing codes after they are used. It also facilitates the addition of extra parameters for identifying the legitimacy
+of the request, managing the lifespan of the code, and scaling.
+
+Typically, SMS sending is implemented through a queue, but in this case, we can validate the data and, if it is invalid,
+refrain from adding unnecessary tasks to the queue.
+
+To prevent spam, a rate limit is used. In this implementation, the limit is one request per minute per route. Requests
+are checked by a combination of IP and route name. Device identifiers or other parameters can also be added for improved
+identification.
+
+To prevent spam using invalid phone numbers, additional packages can be used alongside the Symfony validator, such as
+`misd/phone-number-bundle`.
