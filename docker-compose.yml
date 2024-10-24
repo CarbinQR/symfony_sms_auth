@@ -34,7 +34,7 @@ services:
       PHP_IDE_CONFIG: "serverName=Docker"
     volumes:
       - ./app:/var/www/html
-      - ./docker/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
+      - ./docker/php/php.ini:/usr/local/etc/php/php.ini
     ports:
       - "9005:9000"
     extra_hosts:

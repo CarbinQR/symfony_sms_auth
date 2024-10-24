@@ -26,6 +26,9 @@ class SmsService
     /**
      * In practice, we take credentials from the providers table and perform the necessary
      * manipulations for authorization with the provider. Currently, the code is returned only for testing.
+     *
+     * Sending SMS is often placed in a queue. In this case, caching and sending the message
+     * would be done from the queue.
      */
     public function sendAuthCode(array $requestData): array
     {

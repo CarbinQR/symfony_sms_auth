@@ -43,8 +43,6 @@ RUN set -eux; \
     pdo_pgsql \
     && pecl install igbinary \
     && pecl install memcached \
-    && pecl install xdebug \
-    && docker-php-ext-enable xdebug \
     && apk del autoconf g++ make libmemcached-dev
 
 ARG PUID=1000
