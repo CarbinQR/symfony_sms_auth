@@ -141,3 +141,6 @@ identification.
 
 To prevent spam using invalid phone numbers, additional packages can be used alongside the Symfony validator, such as
 `misd/phone-number-bundle`.
+
+## Time spent
+Time spent: 6 hours (including research for a suitable implementation).
