@@ -31,7 +31,9 @@ class RedisService implements CacheServiceInterface
             return $this->client->get($key);
         });
 
-        return json_decode($cacheData, true, 512, JSON_THROW_ON_ERROR);
+        return (!$cacheData)
+            ? null
+            : json_decode($cacheData, true, 512, JSON_THROW_ON_ERROR);
     }
 
     public function delete(string $key): void

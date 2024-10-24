@@ -54,7 +54,7 @@ class SmsService
         }
 
         $writeData = [
-            'user' => $user->getId(),
+            'user' => $user->getUserIdentifier(),
             'code' => $code,
             'count' => 1,
         ];
