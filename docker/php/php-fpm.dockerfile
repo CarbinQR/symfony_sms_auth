@@ -18,7 +18,7 @@ RUN apk update && apk add --no-cache \
     curl-dev \
     linux-headers \
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
-    && pecl install amqp \
+    && pecl install amqp xdebug\
     && docker-php-ext-install -j$(nproc) \
     mbstring \
     sockets \
@@ -27,7 +27,7 @@ RUN apk update && apk add --no-cache \
     mysqli \
     pdo_mysql \
     pdo \
-    && docker-php-ext-enable amqp\
+    && docker-php-ext-enable amqp xdebug \
     && apk del .build-deps
 
 RUN set -eux; \
@@ -52,3 +52,9 @@ RUN apk --no-cache add shadow && \
     usermod -o -u ${PUID} -g www-data www-data
 
 COPY --from=composer:2.7.7 /usr/bin/composer /usr/bin/composer
+
+RUN echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.client_port=9003" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
